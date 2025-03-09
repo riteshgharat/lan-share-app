@@ -4,20 +4,20 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tailwindcss/postcss": "^4.0.10",
-    "autoprefixer": "^10.4.20",
+    "@tailwindcss/vite": "^4.0.11",
     "axios": "^1.8.1",
-    "postcss": "^8.5.3",
+    "child_process": "^1.0.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-syntax-highlighter": "^15.6.1",
     "socket.io-client": "^4.8.1",
-    "tailwindcss": "^4.0.10"
+    "tailwindcss": "^4.0.11"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

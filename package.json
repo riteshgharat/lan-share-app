@@ -1,0 +1,14 @@
+{
+  "name": "lan-share-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "run.js",
+  "type": "module",
+  "scripts": {
+    "ilsa": "npm i && node setup.js",
+    "lsa": "node setup.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

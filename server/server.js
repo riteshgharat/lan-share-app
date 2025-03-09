@@ -14,6 +14,9 @@ const io = new Server(server, {
   },
 });
 
+// Add this near the top of the file, after creating the io instance
+let connectedUsers = new Set();
+
 // Set up uploads directory
 const uploadDir = path.join(process.cwd(), 'uploads');
 if (!fs.existsSync(uploadDir)) {
@@ -58,15 +61,39 @@ app.get('/download/:filename', (req, res) => {
   res.download(filePath);
 });
 
+// Delete file endpoint
+app.delete('/files/:filename', (req, res) => {
+  const filePath = path.join(uploadDir, req.params.filename);
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      return res.status(500).json({ error: 'Unable to delete file' });
+    }
+    io.emit('fileUpdated'); // Notify all clients about the file change
+    res.json({ message: 'File deleted successfully' });
+  });
+});
+
 // Socket.IO for real-time chat
 io.on('connection', (socket) => {
+  // Add user to connected users
+  connectedUsers.add(socket.id);
+  // Broadcast updated user count to all clients
+  //console.log(connectedUsers);
+  io.emit('userCount', connectedUsers.size);
+
   socket.on('message', (msg) => {
-    io.emit('message', msg); // Broadcast message to all clients
+    io.emit('message', msg);
+  });
+
+  // Handle disconnection
+  socket.on('disconnect', () => {
+    connectedUsers.delete(socket.id);
+    io.emit('userCount', connectedUsers.size);
   });
 });
 
 // Start server on all network interfaces
 const PORT = 5000;
 server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Backend server running on port ${PORT}`);
 });
