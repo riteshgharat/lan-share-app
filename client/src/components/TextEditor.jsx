@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import axios from "axios";
 
 function TextEditor() {
-  const [text, setText] = useState('');
-  const [fileName, setFileName] = useState('');
-  const [language, setLanguage] = useState('javascript');
+  const [text, setText] = useState("");
+  const [fileName, setFileName] = useState("");
+  const [language, setLanguage] = useState("javascript");
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [loadedFiles, setLoadedFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -14,7 +14,7 @@ function TextEditor() {
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get(import.meta.env.VITE_BACKEND_URL+'/files')
+      .get(import.meta.env.VITE_BACKEND_URL + "/files")
       .then((response) => {
         const textFiles = response.data.filter((file) =>
           /\.(txt|js|jsx|html|css|py|json|md)$/.test(file.name)
@@ -29,23 +29,25 @@ function TextEditor() {
   }, []);
 
   const detectLanguage = (filename) => {
-    const extension = filename.split('.').pop().toLowerCase();
+    const extension = filename.split(".").pop().toLowerCase();
     const extensionMap = {
-      js: 'javascript',
-      jsx: 'jsx',
-      html: 'html',
-      css: 'css',
-      py: 'python',
-      json: 'json',
-      md: 'markdown',
-      txt: 'text',
+      js: "javascript",
+      jsx: "jsx",
+      html: "html",
+      css: "css",
+      py: "python",
+      json: "json",
+      md: "markdown",
+      txt: "text",
     };
-    return extensionMap[extension] || 'text';
+    return extensionMap[extension] || "text";
   };
 
   const handleFileLoad = (filename) => {
     axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/files/${filename}`, { responseType: 'text' })
+      .get(`${import.meta.env.VITE_BACKEND_URL}/files/${filename}`, {
+        responseType: "text",
+      })
       .then((response) => {
         setText(response.data);
         setFileName(filename);
@@ -56,41 +58,43 @@ function TextEditor() {
 
   const handleSave = () => {
     if (!fileName) {
-      alert('Please enter a file name');
+      alert("Please enter a file name");
       return;
     }
 
-    const blob = new Blob([text], { type: 'text/plain' });
+    const blob = new Blob([text], { type: "text/plain" });
     const formData = new FormData();
-    formData.append('file', blob, fileName);
+    formData.append("file", blob, fileName);
 
     axios
-      .post(import.meta.env.VITE_BACKEND_URL+'/upload', formData)
+      .post(import.meta.env.VITE_BACKEND_URL + "/upload", formData)
       .then(() => {
-        alert('Text file saved successfully');
-        axios.get(import.meta.env.VITE_BACKEND_URL+'/files').then((response) => {
-          const textFiles = response.data.filter((file) =>
-            /\.(txt|js|jsx|html|css|py|json|md)$/.test(file.name)
-          );
-          setLoadedFiles(textFiles);
-        });
+        alert("Text file saved successfully");
+        axios
+          .get(import.meta.env.VITE_BACKEND_URL + "/files")
+          .then((response) => {
+            const textFiles = response.data.filter((file) =>
+              /\.(txt|js|jsx|html|css|py|json|md)$/.test(file.name)
+            );
+            setLoadedFiles(textFiles);
+          });
       })
       .catch((err) => console.error(err));
   };
 
   const languageOptions = [
-    { value: 'javascript', label: 'JavaScript' },
-    { value: 'jsx', label: 'JSX/React' },
-    { value: 'html', label: 'HTML' },
-    { value: 'css', label: 'CSS' },
-    { value: 'python', label: 'Python' },
-    { value: 'json', label: 'JSON' },
-    { value: 'markdown', label: 'Markdown' },
-    { value: 'text', label: 'Plain Text' },
+    { value: "javascript", label: "JavaScript" },
+    { value: "jsx", label: "JSX/React" },
+    { value: "html", label: "HTML" },
+    { value: "css", label: "CSS" },
+    { value: "python", label: "Python" },
+    { value: "json", label: "JSON" },
+    { value: "markdown", label: "Markdown" },
+    { value: "text", label: "Plain Text" },
   ];
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow">
+    <div className="bg-white p-12 rounded-lg shadow">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6">Text Editor</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -104,7 +108,7 @@ function TextEditor() {
         <select
           value={language}
           onChange={(e) => setLanguage(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
         >
           {languageOptions.map((option) => (
             <option key={option.value} value={option.value}>
@@ -118,16 +122,20 @@ function TextEditor() {
         <div className="space-x-2">
           <button
             onClick={() => setIsPreviewMode(false)}
-            className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
-              !isPreviewMode ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            className={`px-4 py-2 rounded-lg transition-colors duration-200 cursor-pointer hover:bg-blue-700 ${
+              !isPreviewMode
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
             Edit
           </button>
           <button
             onClick={() => setIsPreviewMode(true)}
-            className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
-              isPreviewMode ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            className={`px-4 py-2 rounded-lg transition-colors duration-200 cursor-pointer hover:bg-blue-700 ${
+              isPreviewMode
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
             Preview
@@ -135,7 +143,7 @@ function TextEditor() {
         </div>
         <button
           onClick={handleSave}
-          className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-200 flex items-center"
+          className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-200 flex items-center cursor-pointer"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -171,7 +179,9 @@ function TextEditor() {
       )}
 
       <div className="mt-6">
-        <h3 className="text-lg font-medium text-gray-900 mb-3">Load Existing File</h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-3">
+          Load Existing File
+        </h3>
         {isLoading ? (
           <div className="text-center p-4 text-gray-600">Loading files...</div>
         ) : loadedFiles.length > 0 ? (

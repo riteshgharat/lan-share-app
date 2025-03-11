@@ -23,7 +23,7 @@ function getLocalIPv4() {
 
 // Step 1: Install and Run Server in Background
 console.log("📡 Starting Server...");
-const serverProcess = spawn("npm", ["run", "dev"], {
+const serverProcess = spawn("npm", ["run", "istart"], {
   cwd: "server",
   stdio: "inherit",
   shell: true,

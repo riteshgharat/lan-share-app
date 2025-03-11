@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import io from "socket.io-client";
-
-const socket = io(import.meta.env.VITE_BACKEND_URL);
+import socket from "../socket.js";
 
 function Chat() {
   const [nickname, setNickname] = useState("");
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
-  const [onlineUsers, setOnlineUsers] = useState([]);
+  const [onlineUsers, setOnlineUsers] = useState(0);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -17,18 +15,18 @@ function Chat() {
       setIsTyping(false);
     });
 
-    // socket.on('typing', (user) => {
-    //   setIsTyping(user);
-    // });
+    socket.on("typing", (user) => {
+      setIsTyping(user);
+    });
 
     socket.on("userCount", (users) => {
-      console.log(users);
+      //console.log(users);
       setOnlineUsers(users);
     });
 
     return () => {
       socket.off("message");
-      //socket.off('typing');
+      socket.off("typing");
       socket.off("userCount");
     };
   }, []);
@@ -65,7 +63,7 @@ function Chat() {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow h-full flex flex-col">
+    <div className="bg-white p-12 rounded-lg shadow h-full flex flex-col">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6">Chat</h2>
 
       <div className="flex space-x-4 mb-6">
@@ -127,7 +125,7 @@ function Chat() {
               value={message}
               onChange={handleTyping}
               onKeyPress={handleKeyPress}
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg resize-none focus:outline-none"
               rows="2"
             />
             <button

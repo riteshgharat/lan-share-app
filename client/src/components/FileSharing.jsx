@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import io from "socket.io-client";
-
-const socket = io(import.meta.env.VITE_BACKEND_URL);
+import socket from "../socket.js";
 
 function FileSharing() {
   const [files, setFiles] = useState([]);
@@ -54,7 +52,7 @@ function FileSharing() {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow">
+    <div className="bg-white p-12 rounded-lg shadow">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6">
         File Sharing
       </h2>
@@ -92,7 +90,7 @@ function FileSharing() {
           <button
             onClick={handleUpload}
             disabled={!selectedFile || isUploading}
-            className={`px-4 py-2 rounded-lg text-white transition-colors duration-200 ${
+            className={`px-4 py-2 rounded-lg text-white transition-colors duration-200 cursor-pointer ${
               !selectedFile || isUploading
                 ? "bg-blue-300 cursor-not-allowed"
                 : "bg-blue-600 hover:bg-blue-700"
@@ -112,7 +110,7 @@ function FileSharing() {
       </div>
 
       {files.length > 0 ? (
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-lg border border-gray-200 overflow-y-scroll">
           <div className="grid grid-cols-3 bg-gray-100 p-3 font-semibold text-gray-700">
             <div>Name</div>
             <div>Size</div>
@@ -168,7 +166,7 @@ function FileSharing() {
                             alert("Failed to delete file");
                           });
                     }}
-                    className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors duration-200 flex items-center"
+                    className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors duration-200 flex items-center cursor-pointer"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

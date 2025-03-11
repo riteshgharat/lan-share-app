@@ -1,14 +1,23 @@
-import React from 'react';
+import React from "react";
+import { NavLink } from "react-router-dom";
 
-function Sidebar({ setView }) {
+function Sidebar() {
   return (
-    <nav className="w-64 bg-neutral-800 text-white h-screen p-5 flex-shrink-0 border-r border-neutral-700/30">
-      <h1 className="text-xl font-bold mb-6 border-b border-neutral-700/30 pb-4">LAN Share</h1>
+    <nav className="w-64 bg-neutral-800 text-white h-screen p-5 flex-shrink-0 border-neutral-700/30 border-r-2 border-neutral-700">
+      <NavLink to="/">
+        <h1 className="text-xl font-bold mb-6 border-b border-neutral-700/30 pb-4">
+          LAN Share
+        </h1>
+      </NavLink>
       <ul className="space-y-2">
         <li>
-          <button
-            onClick={() => setView('fileSharing')}
-            className="w-full flex items-center px-5 py-3 text-gray-300 hover:bg-neutral-700 hover:text-white transition-colors duration-200 rounded-lg"
+          <NavLink
+            to="/file-sharing"
+            className={({ isActive }) =>
+              `w-full flex items-center px-5 py-3 text-gray-300 hover:bg-neutral-700 hover:text-white transition-colors duration-200 rounded-lg ${
+                isActive ? "bg-neutral-700 text-white" : ""
+              }`
+            }
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -25,12 +34,16 @@ function Sidebar({ setView }) {
               />
             </svg>
             File Sharing
-          </button>
+          </NavLink>
         </li>
         <li>
-          <button
-            onClick={() => setView('textEditor')}
-            className="w-full flex items-center px-5 py-3 text-gray-300 hover:bg-neutral-700 hover:text-white transition-colors duration-200 rounded-lg"
+          <NavLink
+            to="/text-editor"
+            className={({ isActive }) =>
+              `w-full flex items-center px-5 py-3 text-gray-300 hover:bg-neutral-700 hover:text-white transition-colors duration-200 rounded-lg ${
+                isActive ? "bg-neutral-700 text-white" : ""
+              }`
+            }
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -47,12 +60,16 @@ function Sidebar({ setView }) {
               />
             </svg>
             Text Editor
-          </button>
+          </NavLink>
         </li>
         <li>
-          <button
-            onClick={() => setView('chat')}
-            className="w-full flex items-center px-5 py-3 text-gray-300 hover:bg-neutral-700 hover:text-white transition-colors duration-200 rounded-lg"
+          <NavLink
+            to="/chat"
+            className={({ isActive }) =>
+              `w-full flex items-center px-5 py-3 text-gray-300 hover:bg-neutral-700 hover:text-white transition-colors duration-200 rounded-lg ${
+                isActive ? "bg-neutral-700 text-white" : ""
+              }`
+            }
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -69,7 +86,7 @@ function Sidebar({ setView }) {
               />
             </svg>
             Chat
-          </button>
+          </NavLink>
         </li>
       </ul>
     </nav>
