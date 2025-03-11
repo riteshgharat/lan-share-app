@@ -4,6 +4,8 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
+const PORT = 9696;
+
 // Manually define __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,7 +36,7 @@ setTimeout(() => {
   // Get server IP
   const serverIP = getLocalIPv4();
   const backendURL = `http://${serverIP}:5000`;
-  const frontendURL = `http://${serverIP}:6969/`;
+  const frontendURL = `http://${serverIP}:${PORT}/`;
 
   // Step 2: Update .env File in Client
   const envPath = path.join(__dirname, "client", ".env");

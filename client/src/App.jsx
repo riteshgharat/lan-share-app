@@ -1,10 +1,10 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Home from "./components/Home";
 import Sidebar from "./components/Sidebar";
-import FileSharing from "./components/FileSharing";
-import TextEditor from "./components/TextEditor";
-import Chat from "./components/Chat";
+import Home from "./pages/Home";
+import FileSharing from "./pages/FileSharing";
+import TextEditor from "./pages/TextEditor";
+import Chat from "./pages/Chat";
 
 function App() {
   return (

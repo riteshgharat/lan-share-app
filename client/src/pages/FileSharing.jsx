@@ -2,11 +2,15 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import socket from "../socket.js";
 
+import Previewer from "../components/Previewer";
+
 function FileSharing() {
   const [files, setFiles] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
 
   useEffect(() => {
     fetchFiles();
@@ -49,6 +53,11 @@ function FileSharing() {
         console.error(err);
         setIsUploading(false);
       });
+  };
+
+  const handleShowPreview = (imageUrl) => {
+    setPreviewImage(imageUrl);
+    setShowPreview(true);
   };
 
   return (
@@ -184,6 +193,40 @@ function FileSharing() {
                     </svg>
                     Delete
                   </button>
+                  {file.name.match(/\.(png|jpe?g|svg)\b/gi) ? (
+                    <button
+                      onClick={() =>
+                        handleShowPreview(
+                          `${import.meta.env.VITE_BACKEND_URL}/download/${
+                            file.name
+                          }`
+                        )
+                      }
+                      className="bg-yellow-500 text-white px-3 py-1 rounded-lg hover:bg-yellow-600 transition-colors duration-200 flex items-center cursor-pointer"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 mr-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        />
+                      </svg>
+                      Preview
+                    </button>
+                  ) : null}
                 </div>
               </li>
             ))}
@@ -193,6 +236,12 @@ function FileSharing() {
         <div className="bg-white p-8 rounded-lg border border-gray-200 text-center text-gray-500">
           No files available. Upload a file to get started.
         </div>
+      )}
+      {showPreview && (
+        <Previewer
+          imageUrl={previewImage}
+          onClose={() => setShowPreview(false)}
+        />
       )}
     </div>
   );

@@ -1,47 +1,11 @@
-# LAN SHARE SERVER
+# 🌐 LAN SHARE SERVER
 
-## Prerequisites
+## 🛠️ Prerequisites
 
 - Node.js (v14 or higher)
 - npm (v6 or higher)
 
-## Project Structure
-
-```
-lan-share-app/
-├── package.json
-├── README.md
-├── setup.js
-├── client/
-│   ├── .env
-│   ├── .gitignore
-│   ├── eslint.config.js
-│   ├── index.html
-│   ├── package.json
-│   ├── README.md
-│   ├── vite.config.js
-│   ├── public/
-│   │   └── vite.svg
-│   ├── src/
-│   │   ├── App.css
-│   │   ├── App.jsx
-│   │   ├── index.css
-│   │   ├── main.jsx
-│   │   ├── assets/
-│   │   │   └── react.svg
-│   │   └── components/
-│   │       ├── Chat.jsx
-│   │       ├── FileSharing.jsx
-│   │       └── Sidebar.jsx
-└── server/
-    ├── .gitignore
-    ├── package.json
-    ├── server.js
-    └── uploads/
-        └── (files)
-```
-
-## Setup and Run
+## 🚀 Setup and Run
 
 1. **Clone the repository:**
 
@@ -71,13 +35,13 @@ lan-share-app/
 
     Open your browser and navigate to the URL displayed in the terminal (e.g., `http://<server-ip>:6969`).
 
-## Features
+## ✨ Features
 
-- **File Sharing:** Upload and download files within your local network.
-- **Real-time Chat:** Communicate with other users on the same network.
-- **Text Editor:** Create and edit text documents directly within the app.
+- **📂 File Sharing:** Upload and download files within your local network.
+- **💬 Real-time Chat:** Communicate with other users on the same network.
+- **📝 Text Editor:** Create and edit text documents directly within the app.
 
-## Endpoints
+## 🔌 Endpoints
 
 - **Upload File:** `POST /upload`
 - **List Files:** `GET /files`

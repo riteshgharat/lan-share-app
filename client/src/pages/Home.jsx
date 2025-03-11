@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 
 function Home() {
   return (
@@ -70,9 +71,12 @@ function Home() {
 
         {/* CTA Section */}
         <div className="text-center mt-16">
-          <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-8 rounded-full transition-colors duration-300">
+          <NavLink
+            to="/file-sharing"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-8 rounded-full transition-colors duration-300"
+          >
             Get Started Now
-          </button>
+          </NavLink>
         </div>
       </section>
 
