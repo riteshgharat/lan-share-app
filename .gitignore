@@ -12,7 +12,14 @@ dist
 dist-ssr
 *.local
 
-/uploads/*
+# builds
+web/dist/
+src/web-static.js
+dist/
+
+# runtime uploads
+uploads/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

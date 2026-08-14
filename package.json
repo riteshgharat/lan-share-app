@@ -1,14 +1,48 @@
 {
-  "name": "lan-share-app",
+  "name": "lan-share",
   "version": "1.0.0",
-  "description": "",
-  "main": "run.js",
+  "description": "Croc-style file sharing over LAN. Send files/folders from the CLI or terminal; receive via the CLI or a zero-install web app the sender hosts. Chat, image preview and a text editor included.",
   "type": "module",
-  "scripts": {
-    "ilsa": "npm i && node setup.js",
-    "lsa": "node setup.js"
+  "bin": {
+    "lan-share": "./bin/lan-share.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "main": "src/cli.js",
+  "files": [
+    "bin",
+    "src"
+  ],
+  "scripts": {
+    "start": "node bin/lan-share.js",
+    "test": "node --test test/smoke.test.js test/portal.test.js",
+    "setup": "npm ci && npm --prefix web ci && npm run build:web",
+    "build:web": "node scripts/build-web.js"
+  },
+  "keywords": [
+    "lan",
+    "file",
+    "sharing",
+    "cli",
+    "p2p",
+    "croc",
+    "transfer",
+    "chat"
+  ],
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "archiver": "^8.0.0",
+    "bonjour-service": "^1.2.1",
+    "chalk": "^5.4.1",
+    "cli-progress": "^3.12.0",
+    "commander": "^12.1.0",
+    "express": "^4.21.2",
+    "multer": "^2.0.0",
+    "qrcode-terminal": "^0.12.0",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.8.1"
+  }
 }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import axios from "axios";
+import { apiUrl } from "../api.js";
 
 function TextEditor() {
   const [text, setText] = useState("");
@@ -14,10 +15,10 @@ function TextEditor() {
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get(import.meta.env.VITE_BACKEND_URL + "/files")
+      .get(apiUrl("/api/files"))
       .then((response) => {
-        const textFiles = response.data.filter((file) =>
-          /\.(txt|js|jsx|html|css|py|json|md)$/.test(file.name)
+        const textFiles = (response.data.files || []).filter((file) =>
+          /\.(txt|js|jsx|html|css|py|json|md|ts|tsx)$/.test(file.name)
         );
         setLoadedFiles(textFiles);
         setIsLoading(false);
@@ -33,6 +34,8 @@ function TextEditor() {
     const extensionMap = {
       js: "javascript",
       jsx: "jsx",
+      ts: "typescript",
+      tsx: "jsx",
       html: "html",
       css: "css",
       py: "python",
@@ -45,12 +48,12 @@ function TextEditor() {
 
   const handleFileLoad = (filename) => {
     axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/files/${filename}`, {
+      .get(apiUrl(`/api/download/${encodeURIComponent(filename)}`), {
         responseType: "text",
       })
       .then((response) => {
         setText(response.data);
-        setFileName(filename);
+        setFileName(filename.replace(/^\d+-/, ""));
         setLanguage(detectLanguage(filename));
       })
       .catch((err) => console.error(err));
@@ -61,30 +64,29 @@ function TextEditor() {
       alert("Please enter a file name");
       return;
     }
-
     const blob = new Blob([text], { type: "text/plain" });
     const formData = new FormData();
     formData.append("file", blob, fileName);
-
     axios
-      .post(import.meta.env.VITE_BACKEND_URL + "/upload", formData)
+      .post(apiUrl("/api/upload"), formData)
       .then(() => {
         alert("Text file saved successfully");
-        axios
-          .get(import.meta.env.VITE_BACKEND_URL + "/files")
-          .then((response) => {
-            const textFiles = response.data.filter((file) =>
-              /\.(txt|js|jsx|html|css|py|json|md)$/.test(file.name)
-            );
-            setLoadedFiles(textFiles);
-          });
+        axios.get(apiUrl("/api/files")).then((response) => {
+          const textFiles = (response.data.files || []).filter((file) =>
+            /\.(txt|js|jsx|html|css|py|json|md|ts|tsx)$/.test(file.name)
+          );
+          setLoadedFiles(textFiles);
+        });
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        alert(err.response?.data?.error || "Save failed (uploads may be disabled)");
+      });
   };
 
   const languageOptions = [
     { value: "javascript", label: "JavaScript" },
     { value: "jsx", label: "JSX/React" },
+    { value: "typescript", label: "TypeScript" },
     { value: "html", label: "HTML" },
     { value: "css", label: "CSS" },
     { value: "python", label: "Python" },
@@ -122,20 +124,16 @@ function TextEditor() {
         <div className="space-x-2">
           <button
             onClick={() => setIsPreviewMode(false)}
-            className={`px-4 py-2 rounded-lg transition-colors duration-200 cursor-pointer hover:bg-blue-700 ${
-              !isPreviewMode
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            className={`px-4 py-2 rounded-lg transition-colors duration-200 cursor-pointer ${
+              !isPreviewMode ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
             }`}
           >
             Edit
           </button>
           <button
             onClick={() => setIsPreviewMode(true)}
-            className={`px-4 py-2 rounded-lg transition-colors duration-200 cursor-pointer hover:bg-blue-700 ${
-              isPreviewMode
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            className={`px-4 py-2 rounded-lg transition-colors duration-200 cursor-pointer ${
+              isPreviewMode ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
             }`}
           >
             Preview
@@ -143,22 +141,8 @@ function TextEditor() {
         </div>
         <button
           onClick={handleSave}
-          className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-200 flex items-center cursor-pointer"
+          className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-200 cursor-pointer"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 mr-2"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
-            />
-          </svg>
           Save
         </button>
       </div>
@@ -179,9 +163,7 @@ function TextEditor() {
       )}
 
       <div className="mt-6">
-        <h3 className="text-lg font-medium text-gray-900 mb-3">
-          Load Existing File
-        </h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-3">Load Existing File</h3>
         {isLoading ? (
           <div className="text-center p-4 text-gray-600">Loading files...</div>
         ) : loadedFiles.length > 0 ? (
@@ -192,7 +174,7 @@ function TextEditor() {
                 onClick={() => handleFileLoad(file.name)}
                 className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 border-b border-gray-200 last:border-b-0 transition-colors duration-200"
               >
-                {file.name}
+                {file.name.replace(/^\d+-/, "")}
               </button>
             ))}
           </div>
